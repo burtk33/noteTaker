@@ -13,6 +13,8 @@
 ## Description
 A personal note taker that saves notes input by the user and displays them. Notes are saved via express.js server
 
+[Deployed Link](https://note-taker-burtk33.herokuapp.com/)
+
 ## Installation Instructions
 Requires Node.js and node package modules 'inquirer', 'fs', 'path', 'uniqid' and 'express'
 
