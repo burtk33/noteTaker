@@ -11,9 +11,9 @@ const PORT = process.env.PORT || 8080;
 //express static route
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'))
+app.use(express.static('public'));
 
-//arrays to hold JSON data
+//read file function fro db.json
 fs.readFile('./db/db.json', 'utf8', (err, data) => {
     if (err) throw (err);
     let notes = JSON.parse(data);
@@ -24,6 +24,16 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
     app.get('/api/notes', (req, res) => res.json(notes));
 
     app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/public/index.html')));
+
+    app.get("/api/notes/:id", function (req, res) {
+        res.json(notes[req.params.id]);
+    });
+
+    app.delete("/api/notes/:id", function (req, res) {
+        notes.splice(req.params.id, 1);
+        updateDB();
+        console.log("Deleted note with id " + req.params.id);
+    });
 
 
     //Post methods
@@ -36,7 +46,7 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
 
     //update DB file
     updateDB = () => {
-        fs.writeFile("./db/db.json", JSON.stringify(notes, '\t'), err => {
+        fs.writeFile("./db/db.json", JSON.stringify(notes), err => {
             if (err) throw err;
             return true;
         });
