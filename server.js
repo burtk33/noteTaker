@@ -1,15 +1,15 @@
-//Importing express, path and fs
+//Importing express, path, fs and uniqid
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const uniqid= require('uniqid');
 
-//assinging variables and PORT number
+//assigning variables and PORT number
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 
-//express static route
+//express usage
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
@@ -19,7 +19,7 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
     if (err) throw (err);
     let notes = JSON.parse(data);
 
-    //Get methods
+    //GET methods
     app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
 
     app.get('/api/notes', (req, res) => res.send(notes));
@@ -30,6 +30,7 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
         res.json(notes[req.params.id]);
     });
 
+    //DELETE method
     app.delete("/api/notes/:id", function (req, res) {
         notes.splice(req.params.id, 1);
         res.json(notes);
@@ -37,7 +38,7 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
     });
 
 
-    //Post methods
+    //POST methods
     app.post('/api/notes', (req, res) => {
 
         let newNote = req.body;
@@ -47,6 +48,7 @@ fs.readFile('./db/db.json', 'utf8', (err, data) => {
         updateDb();
     });
 
+    //function to update d.json with writeFile
     function updateDb() {
         fs.writeFile("db/db.json",JSON.stringify(notes,'\t'),err => {
             if (err) throw err;
